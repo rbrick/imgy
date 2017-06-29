@@ -1,16 +1,17 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
-	"os"
 
 	"net"
 
 	"github.com/gorilla/mux"
-	_ "github.com/gorilla/sessions"
+	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/rbrick/imgy/config"
 )
 
 const (
@@ -31,11 +32,13 @@ const (
 )
 
 var (
-	db *gorm.DB
+	db          *gorm.DB
+	cookieStore *sessions.CookieStore
+	conf        *config.Config
 )
 
-func initDB() {
-	database, err := gorm.Open("sqlite3", "imgy.db")
+func initDB(dbPath string) {
+	database, err := gorm.Open("sqlite3", dbPath)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -51,8 +54,23 @@ func initDB() {
 	}
 }
 
+func initCookieStore(key string) {
+	cookieStore = sessions.NewCookieStore([]byte(key))
+}
+
 func init() {
-	initDB()
+	configPath := flag.String("c", "imgy.json", "specifies the path to Imgy's configuration file")
+
+	flag.Parse()
+
+	if config, err := config.Open(*configPath); err != nil {
+		log.Fatalln(err)
+	} else {
+		conf = config
+	}
+
+	initDB(conf.DatabaseConfig.Path)
+	initCookieStore(conf.CookieStoreKey)
 }
 
 func main() {
@@ -60,7 +78,7 @@ func main() {
 	router := mux.NewRouter()
 	authHandler := newAuthHandler(router)
 
-	host := net.JoinHostPort(os.Getenv("IMGY_HOST"), os.Getenv("IMGY_PORT"))
+	host := net.JoinHostPort(conf.Host, conf.Port)
 
 	log.Fatalln(http.ListenAndServe(host, authHandler))
 }

@@ -1,0 +1,14 @@
+{
+    "host": "localhost",
+    "port": "8080",
+    "databaseType": "sqlite",
+    "database": {
+        "path": "imgy.db"
+    },
+    "tlsEnabled": false,
+    "tls": {
+        "cert": "/path/to/cert",
+        "key": "/path/to/key"
+    },
+    "cookieStoreKey": "something long and complex."
+}

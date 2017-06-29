@@ -2,7 +2,7 @@ FROM golang:1.8.3-alpine
 
 WORKDIR "/go/src/github.com/rbrick/imgy"
 
-RUN apk add --no-cache curl sqlite git gcc
+RUN apk add --no-cache curl sqlite git gcc g++
 
 # Install Glide
 RUN curl https://glide.sh/get | sh
