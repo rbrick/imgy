@@ -20,6 +20,10 @@ var (
 			CertPath: "imgy.cert",
 			KeyPath:  "imgy.key",
 		},
+		AWSConfig: &AWSConfig{
+			Bucket: "imgy-s3",
+			Region: "us-west-2",
+		},
 	}
 )
 
@@ -28,6 +32,7 @@ type Config struct {
 	Port           string     `json:"port"`
 	CookieStoreKey string     `json:"cookieStoreKey"`
 	DatabaseConfig *DBConfig  `json:"database"`
+	AWSConfig      *AWSConfig `json:"aws"`
 	TLSEnabled     bool       `json:"tlsEnabled"`
 	TLSConfig      *TLSConfig `json:"tls"`
 }
@@ -39,6 +44,11 @@ type DBConfig struct {
 type TLSConfig struct {
 	CertPath string `json:"cert"`
 	KeyPath  string `json:"path"`
+}
+
+type AWSConfig struct {
+	Bucket string `json:"bucket"`
+	Region string `json:"region"`
 }
 
 // Open opens a config file

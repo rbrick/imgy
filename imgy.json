@@ -5,6 +5,10 @@
     "database": {
         "path": "imgy.db"
     },
+    "aws": {
+        "bucket": "imgy-s3",
+        "region": "us-west-2"
+    },
     "tlsEnabled": false,
     "tls": {
         "cert": "/path/to/cert",

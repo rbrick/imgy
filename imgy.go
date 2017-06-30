@@ -7,11 +7,13 @@ import (
 
 	"net"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/rbrick/imgy/config"
+	"github.com/rbrick/imgy/storage"
 )
 
 const (
@@ -26,15 +28,16 @@ const (
 
 	imageSchema = "CREATE TABLE IF NOT EXISTS `images` (" +
 		"`ID` TEXT NOT NULL UNIQUE," +
-		"`Data` BLOB NOT NULL," +
+		"`UserID` TEXT NOT NULL," +
 		"PRIMARY KEY(`ID`)" +
 		");"
 )
 
 var (
-	db          *gorm.DB
-	cookieStore *sessions.CookieStore
-	conf        *config.Config
+	db                *gorm.DB
+	cookieStore       *sessions.CookieStore
+	conf              *config.Config
+	amazonWebServices *storage.AWS
 )
 
 func initDB(dbPath string) {
@@ -56,6 +59,20 @@ func initDB(dbPath string) {
 
 func initCookieStore(key string) {
 	cookieStore = sessions.NewCookieStore([]byte(key))
+}
+
+func initAWS() {
+	awsConfig := &aws.Config{
+		Region: aws.String(conf.AWSConfig.Region),
+	}
+
+	amz, err := storage.InitAWS(awsConfig, storage.WithBucket(conf.AWSConfig.Bucket))
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	amazonWebServices = amz
 }
 
 func init() {
@@ -80,5 +97,11 @@ func main() {
 
 	host := net.JoinHostPort(conf.Host, conf.Port)
 
-	log.Fatalln(http.ListenAndServe(host, authHandler))
+	if conf.TLSEnabled {
+		log.Println("Starting webserver with TLS")
+		log.Fatalln(http.ListenAndServeTLS(host, conf.TLSConfig.CertPath, conf.TLSConfig.KeyPath, authHandler))
+	} else {
+		log.Println("Starting webserver")
+		log.Fatalln(http.ListenAndServe(host, authHandler))
+	}
 }

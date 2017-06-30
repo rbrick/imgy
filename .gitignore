@@ -2,3 +2,5 @@
 vendor/
 glide.lock
 *.db
+.aws/credentials
+credentials
