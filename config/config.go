@@ -24,17 +24,22 @@ var (
 			Bucket: "imgy-s3",
 			Region: "us-west-2",
 		},
+		GoogleAuth: &GoogleAuthConfig{
+			JsonPath: "auth_creds.json",
+		},
 	}
 )
 
 type Config struct {
-	Host           string     `json:"host"`
-	Port           string     `json:"port"`
-	CookieStoreKey string     `json:"cookieStoreKey"`
-	DatabaseConfig *DBConfig  `json:"database"`
-	AWSConfig      *AWSConfig `json:"aws"`
-	TLSEnabled     bool       `json:"tlsEnabled"`
-	TLSConfig      *TLSConfig `json:"tls"`
+	Host              string            `json:"host"`
+	Port              string            `json:"port"`
+	CookieStoreKey    string            `json:"cookieStoreKey"`
+	DatabaseConfig    *DBConfig         `json:"database"`
+	AWSConfig         *AWSConfig        `json:"aws"`
+	TLSEnabled        bool              `json:"tlsEnabled"`
+	TLSConfig         *TLSConfig        `json:"tls"`
+	GoogleAuthEnabled bool              `json:"googleAuthEnabled"`
+	GoogleAuth        *GoogleAuthConfig `json:"googleAuth"`
 }
 
 type DBConfig struct {
@@ -49,6 +54,10 @@ type TLSConfig struct {
 type AWSConfig struct {
 	Bucket string `json:"bucket"`
 	Region string `json:"region"`
+}
+
+type GoogleAuthConfig struct {
+	JsonPath string `json:"jsonPath"`
 }
 
 // Open opens a config file

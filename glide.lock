@@ -1,6 +1,10 @@
-hash: 91afda10be45f3412ccf8e113abe47ec57b43ded02c042c6bca6e0bf92c36fb3
-updated: 2017-06-30T18:47:36.9443005-05:00
+hash: 3a5e6e3b9c66b7b0ba633ac42347266d86264698d05fe4a5ec914a8e164ed7ef
+updated: 2017-07-03T15:55:43.9538846-05:00
 imports:
+- name: cloud.google.com/go
+  version: 558b56dfa3c56acc26fef35cb07f97df0bb18b39
+  subpackages:
+  - compute/metadata
 - name: github.com/aws/aws-sdk-go
   version: a5a7f553e106c0b1dcbfbdaeb8774592fcc1a68a
   subpackages:
@@ -33,6 +37,10 @@ imports:
   - service/sts
 - name: github.com/go-ini/ini
   version: 3d73f4b845efdf9989fffd4b4e562727744a34ba
+- name: github.com/golang/protobuf
+  version: 6a1fa9404c0aebf36c879bc50152edcc953910d2
+  subpackages:
+  - proto
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
 - name: github.com/gorilla/mux
@@ -51,8 +59,30 @@ imports:
   version: bd40a432e4c76585ef6b72d3fd96fb9b6dc7b68d
 - name: github.com/mattn/go-sqlite3
   version: ca5e3819723d8eeaf170ad510e7da1d6d2e94a08
+- name: goji.io
+  version: 0d89ff54b2c18c9c4ba530e32496aef902d3c6cd
 - name: golang.org/x/net
   version: 1f9224279e98554b6a6432d4dd998a739f8b2b7c
   subpackages:
   - context
+  - context/ctxhttp
+- name: golang.org/x/oauth2
+  version: cce311a261e6fcf29de72ca96827bdb0b7d9c9e6
+  subpackages:
+  - google
+  - internal
+  - jws
+  - jwt
+- name: google.golang.org/appengine
+  version: d11fc8a8dccf41ab5bd3c51a3ea52051240e325c
+  subpackages:
+  - internal
+  - internal/app_identity
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/modules
+  - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
 testImports: []

@@ -2,59 +2,35 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
+
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 
 	"net"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/rbrick/imgy/config"
+	"github.com/rbrick/imgy/db"
 	"github.com/rbrick/imgy/storage"
 )
 
-const (
-	userSchema = "CREATE TABLE IF NOT EXISTS `users` (" +
-		"`ID`	TEXT NOT NULL UNIQUE," +
-		"`Username` TEXT NOT NULL UNIQUE," +
-		"`Password` TEXT NOT NULL," +
-		"`SessionToken` TEXT UNIQUE," +
-		"`UploadToken` TEXT UNIQUE," +
-		"PRIMARY KEY(`ID`)" +
-		");"
-
-	imageSchema = "CREATE TABLE IF NOT EXISTS `images` (" +
-		"`ID` TEXT NOT NULL UNIQUE," +
-		"`UserID` TEXT NOT NULL," +
-		"PRIMARY KEY(`ID`)" +
-		");"
-)
-
 var (
-	db                *gorm.DB
 	cookieStore       *sessions.CookieStore
 	conf              *config.Config
 	amazonWebServices *storage.AWS
+	oauthConf         *oauth2.Config
 )
 
-func initDB(dbPath string) {
-	database, err := gorm.Open("sqlite3", dbPath)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	db = database
-
-	if err = database.Exec(userSchema).Error; err != nil {
-		log.Fatalln(err)
-	}
-
-	if err = database.Exec(imageSchema).Error; err != nil {
-		log.Fatalln(err)
-	}
+// The scopes we use for Google oauth
+var scopes = []string{
+	"https://www.googleapis.com/auth/userinfo.email",
 }
 
 func initCookieStore(key string) {
@@ -75,6 +51,21 @@ func initAWS() {
 	amazonWebServices = amz
 }
 
+func initOauth() {
+	f, err := ioutil.ReadFile(conf.GoogleAuth.JsonPath)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	c, err := google.ConfigFromJSON(f, scopes...)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	oauthConf = c
+}
+
 func init() {
 	configPath := flag.String("c", "imgy.json", "specifies the path to Imgy's configuration file")
 
@@ -86,22 +77,40 @@ func init() {
 		conf = config
 	}
 
-	initDB(conf.DatabaseConfig.Path)
+	db.Init(conf.DatabaseConfig)
 	initCookieStore(conf.CookieStoreKey)
+	initOauth()
 }
 
 func main() {
 	defer db.Close()
+
+	rand.Seed(time.Now().UnixNano())
+
 	router := mux.NewRouter()
-	authHandler := newAuthHandler(router)
+
+	router.HandleFunc("/auth/signin", signIn)
+	router.HandleFunc("/auth/complete", oauth2Callback)
+	router.HandleFunc("/auth/signout", signOut)
+
+	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
+
+	router.HandleFunc("/", index)
+
+	// authHandler := newAuthHandler(router)
 
 	host := net.JoinHostPort(conf.Host, conf.Port)
 
 	if conf.TLSEnabled {
 		log.Println("Starting webserver with TLS")
-		log.Fatalln(http.ListenAndServeTLS(host, conf.TLSConfig.CertPath, conf.TLSConfig.KeyPath, authHandler))
+		log.Fatalln(http.ListenAndServeTLS(host, conf.TLSConfig.CertPath, conf.TLSConfig.KeyPath, router))
 	} else {
 		log.Println("Starting webserver")
-		log.Fatalln(http.ListenAndServe(host, authHandler))
+		log.Fatalln(http.ListenAndServe(host, router))
 	}
+}
+
+func MustSession(r *http.Request, name string) *sessions.Session {
+	s, _ := cookieStore.Get(r, name)
+	return s
 }

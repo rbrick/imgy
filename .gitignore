@@ -1,5 +1,7 @@
 *.exe
 vendor/
 *.db
+*.png
 .aws/credentials
 credentials
+auth_creds.json

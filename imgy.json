@@ -9,10 +9,17 @@
         "bucket": "imgy-s3",
         "region": "us-west-2"
     },
+    "googleAuthEnabled": true,
+    "googleAuth": {
+        "clientId": "85313445972-u4508homs5iu2em6b6ch9j4if4sqelvi.apps.googleusercontent.com",
+        "clientSecret": "CGp52W2mkEMuroD5rZ4Zgt4d",
+        "jsonPath": "auth_creds.json"
+    },
     "tlsEnabled": false,
     "tls": {
         "cert": "/path/to/cert",
         "key": "/path/to/key"
     },
-    "cookieStoreKey": "something long and complex."
+    "cookieStoreKey": "something long and complex.",
+    "inviteOnly": true
 }

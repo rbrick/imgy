@@ -1,5 +1,16 @@
 <html>
+    <head>
+       {{ template "base" }}
+    </head>
     <body>
-        <img src="{{ .S3Image }} " />
+        {{ if .HasAuth }}
+        <span>Welcome {{ .User.DisplayName }}</span><br/>
+        <span>Email: {{ .User.Email }}</span><br/>
+        <span>Profile Picture:</span><br/>
+        <img src="{{ .User.ProfilePicture }}"/><br/>
+        <a href="/auth/signout">Sign out</a>
+        {{ else }}
+        <span>You must be signed in to use this service. Click <a href="/auth/signin">here</a> to sign-in</span>
+        {{ end }}
     </body>
 </html>
