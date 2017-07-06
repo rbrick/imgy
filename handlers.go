@@ -35,6 +35,14 @@ var test = func(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func signOut(w http.ResponseWriter, r *http.Request) {
+	sess := util.MustSession(r, "imgy")
+	if u := db.GetUserFromSession(sess); u != nil {
+		u.EndSession(sess, r, w)
+	}
+	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+}
+
 func index(w http.ResponseWriter, r *http.Request) {
 	sess := util.MustSession(r, "imgy")
 	u := db.GetUserFromSession(sess)
