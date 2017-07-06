@@ -1,0 +1,61 @@
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Pacifico|Roboto" rel="stylesheet"> 
+        <link href="../assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+            body {
+                background-color: #0074D9
+            }
+
+            .imgy-header {
+                font-family: 'Pacifico', cursive;
+                text-align: center;
+                color: #FFFFFF;
+                font-size: 65px;
+            }
+            .imgy-subheader {
+                font-family: 'Roboto', sans-serif;
+                text-align: center;
+                color: #FFFFFF;
+                font-size: 15px;
+            }
+            .login-div {
+                display: table;
+            }
+
+            .login-modal {
+                vertical-align: center;
+                margin-left: auto;
+                margin-right: auto;
+                padding-top: 100px;
+            }
+
+            .imgy-btn {
+                color: #FFFFFF;
+                width: 150px;
+            }
+            .imgy-btn.github {
+                background-color: #111111;
+            } 
+            
+            .imgy-btn.google {
+                background-color: #FF4136;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="login-div center-block">
+            <h1 class="login-modal imgy-header">Imgy</h1>
+            <!--<h2 class="imgy-subheader">You must be signed in to use this application</h2>-->
+            <br/>
+            <div>
+            {{ range $v := .}}
+            <button type="button" onclick="window.location.href = '{{ $v.AuthURL }}'" class="btn imgy-btn {{ $v.AuthName  }}"><i class="fa fa-{{ $v.AuthName }} fa-lg" aria-hidden="true"></i> {{ $v.AuthName }}</button>
+            {{ end }}
+            </div>
+            <!--<button type="button" class="btn imgy-btn google"><span class="fa fa-google fa-lg" aria-hidden="true"></span>Google</button>-->
+        </div>
+    </body>
+</html>

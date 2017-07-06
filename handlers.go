@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/rbrick/imgy/auth"
 	"github.com/rbrick/imgy/db"
+	"github.com/rbrick/imgy/util"
 )
 
 var test = func(w http.ResponseWriter, r *http.Request) {
@@ -34,20 +36,31 @@ var test = func(w http.ResponseWriter, r *http.Request) {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	sess := MustSession(r, "imgy")
+	sess := util.MustSession(r, "imgy")
 	u := db.GetUserFromSession(sess)
 
-	templData := struct {
-		HasAuth bool
-		User    *db.User
-	}{}
 	if u == nil || !u.LoggedIn() {
-		// fmt.Printf("User: %v\n", u)
-		templData.HasAuth = false
-		indexTemplate.Execute(w, templData)
+		// Show sign-up page
+		state := util.GetRandom(16)
+
+		type aux struct {
+			AuthURL  string
+			AuthName string
+		}
+
+		values := []*aux{}
+
+		for _, v := range auth.Services() {
+			url := v.AuthURL(state)
+			values = append(values, &aux{url, v.Name()})
+		}
+
+		authSess := util.MustSession(r, "imgy-auth")
+		authSess.Values["state"] = state
+		authSess.Save(r, w)
+
+		signupTemplate.Execute(w, values)
 	} else {
-		templData.HasAuth = true
-		templData.User = u
-		indexTemplate.Execute(w, templData)
+		indexTemplate.Execute(w, u)
 	}
 }

@@ -2,14 +2,10 @@
     <head>
     </head>
     <body>
-        {{ if .HasAuth }}
-        <span>Welcome {{ .User.DisplayName }}</span><br/>
-        <span>Email: {{ .User.Email }}</span><br/>
+        <span>Welcome {{ .DisplayName }}</span><br/>
+        <span>Email: {{ .Email }}</span><br/>
         <span>Profile Picture:</span><br/>
-        <img src="{{ .User.ProfilePicture }}"/><br/>
+        <img src="{{ .ProfilePicture }}"/><br/>
         <a href="/auth/signout">Sign out</a>
-        {{ else }}
-        <span>You must be signed in to use this service. Click <a href="/auth/signin">here</a> to sign-in</span>
-        {{ end }}
     </body>
 </html>

@@ -1,32 +1,32 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/rbrick/imgy/db"
+	"github.com/rbrick/imgy/util"
 )
 
 func RequireAuth(h http.Handler) http.Handler {
 	handle := func(w http.ResponseWriter, r *http.Request) {
-		sess, err := cookieStore.Get(r, "imgy")
-		if err != nil {
-			log.Panicln(err)
-		}
+		sess := util.MustSession(r, "imgy")
 
 		if v, ok := sess.Values["session_token"]; !ok {
-			http.Error(w, "Not authorized", http.StatusUnauthorized)
+			sess.AddFlash("Not logged in.")
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		} else {
 			u := db.GetUserBySessionToken(v.(string))
 
 			if u == nil {
-				http.Error(w, "Not authorized", http.StatusUnauthorized)
+				sess.AddFlash("Not logged in.")
+				http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 			} else {
 				if u.LoggedIn() {
 
 				}
 			}
 		}
+		sess.Save(r, w)
 	}
 	return http.HandlerFunc(handle)
 }

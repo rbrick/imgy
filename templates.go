@@ -3,6 +3,6 @@ package main
 import "html/template"
 
 var (
-	signInTemplate = template.Must(template.ParseFiles("templates/signin.html"))
+	signupTemplate = template.Must(template.ParseFiles("templates/signup.html"))
 	indexTemplate  = template.Must(template.ParseFiles("templates/index.html"))
 )

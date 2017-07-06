@@ -24,22 +24,20 @@ var (
 			Bucket: "imgy-s3",
 			Region: "us-west-2",
 		},
-		GoogleAuth: &GoogleAuthConfig{
-			JsonPath: "auth_creds.json",
-		},
 	}
 )
 
 type Config struct {
-	Host              string            `json:"host"`
-	Port              string            `json:"port"`
-	CookieStoreKey    string            `json:"cookieStoreKey"`
-	DatabaseConfig    *DBConfig         `json:"database"`
-	AWSConfig         *AWSConfig        `json:"aws"`
-	TLSEnabled        bool              `json:"tlsEnabled"`
-	TLSConfig         *TLSConfig        `json:"tls"`
-	GoogleAuthEnabled bool              `json:"googleAuthEnabled"`
-	GoogleAuth        *GoogleAuthConfig `json:"googleAuth"`
+	Host           string                  `json:"host"`
+	Port           string                  `json:"port"`
+	CookieStoreKey string                  `json:"cookieStoreKey"`
+	DatabaseConfig *DBConfig               `json:"database"`
+	AWSConfig      *AWSConfig              `json:"aws"`
+	TLSEnabled     bool                    `json:"tlsEnabled"`
+	TLSConfig      *TLSConfig              `json:"tls"`
+	OauthURL       string                  `json:"oauthUrl"`
+	OauthProviders []string                `json:"oauthProviders"`
+	OauthConfigs   map[string]*OAuthConfig `json:"oauthSettings"`
 }
 
 type DBConfig struct {
@@ -58,6 +56,13 @@ type AWSConfig struct {
 
 type GoogleAuthConfig struct {
 	JsonPath string `json:"jsonPath"`
+}
+
+type OAuthConfig struct {
+	Name         string `json:"name"`
+	ClientID     string `json:"clientId"`
+	ClientSecret string `json:"clientSecret"`
+	RedirectPath string `json:"redirectPath"`
 }
 
 // Open opens a config file
