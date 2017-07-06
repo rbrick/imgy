@@ -1,13 +1,12 @@
 package auth
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/rbrick/imgy/config"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	goauth "google.golang.org/api/oauth2/v2"
 )
 
 func init() {
@@ -15,6 +14,7 @@ func init() {
 }
 
 var googleScopes = []string{
+	"https://www.googleapis.com/auth/userinfo.email",
 	"https://www.googleapis.com/auth/userinfo.profile",
 }
 
@@ -46,18 +46,28 @@ func (gas *GoogleAuthService) Path() string {
 }
 
 func (gas *GoogleAuthService) Callback(client *http.Client) (*UserInfo, error) {
-	response, err := client.Get("https://www.googleapis.com/oauth2/v2/userinfo")
+	service, err := goauth.New(client)
+
 	if err != nil {
 		return nil, err
 	}
 
-	content, _ := ioutil.ReadAll(response.Body)
+	uiService := goauth.NewUserinfoV2Service(service)
+	info, err := uiService.Me.Get().Do()
+
+	if err != nil {
+		return nil, err
+	}
+
 	x := struct {
 		Email       string `json:"email"`
 		DisplayName string `json:"name"`
 		Picture     string `json:"picture"`
 	}{}
-	json.Unmarshal(content, &x)
+
+	x.Email = info.Email
+	x.DisplayName = info.Name
+	x.Picture = info.Picture
 
 	ui := UserInfo(x)
 	return &ui, nil

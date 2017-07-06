@@ -47,6 +47,7 @@ func init() {
 		conf = config
 	}
 
+	initAWS()
 	db.Init(conf.DatabaseConfig)
 	storage.InitCookieStore(conf.CookieStoreKey)
 	auth.Init(conf)
@@ -58,6 +59,8 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	router := mux.NewRouter()
+
+	router.HandleFunc("/upload", upload)
 
 	router.HandleFunc("/auth/signout", signOut)
 

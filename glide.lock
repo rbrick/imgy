@@ -1,12 +1,12 @@
-hash: 3a5e6e3b9c66b7b0ba633ac42347266d86264698d05fe4a5ec914a8e164ed7ef
-updated: 2017-07-03T15:55:43.9538846-05:00
+hash: 88fb803da03f45ad507dcce8147ec6876513ac52dc5ac8de7d3d654832122a4f
+updated: 2017-07-06T17:58:48.9542314-05:00
 imports:
 - name: cloud.google.com/go
-  version: 558b56dfa3c56acc26fef35cb07f97df0bb18b39
+  version: a854cb2f6eaf80cbf740935ca4dda494e2c0ac8a
   subpackages:
   - compute/metadata
 - name: github.com/aws/aws-sdk-go
-  version: a5a7f553e106c0b1dcbfbdaeb8774592fcc1a68a
+  version: b1a7b51924b90a6ecdbaeb17e96418740ff07a1e
   subpackages:
   - aws
   - aws/awserr
@@ -62,7 +62,7 @@ imports:
 - name: goji.io
   version: 0d89ff54b2c18c9c4ba530e32496aef902d3c6cd
 - name: golang.org/x/net
-  version: 1f9224279e98554b6a6432d4dd998a739f8b2b7c
+  version: 054b33e6527139ad5b1ec2f6232c3b175bd9a30c
   subpackages:
   - context
   - context/ctxhttp
@@ -73,6 +73,13 @@ imports:
   - internal
   - jws
   - jwt
+- name: google.golang.org/api
+  version: e6586c9293b9d514c7f5d5076731ec977cff1be6
+  subpackages:
+  - gensupport
+  - googleapi
+  - googleapi/internal/uritemplates
+  - oauth2/v2
 - name: google.golang.org/appengine
   version: d11fc8a8dccf41ab5bd3c51a3ea52051240e325c
   subpackages:

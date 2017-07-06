@@ -8,11 +8,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
-var (
-	awsSession *session.Session
-	uploader   *s3manager.Uploader
-)
-
 // AWSOption represents an option which can be used to configure
 // an AWS instance
 type AWSOption func(a *AWS)
@@ -58,7 +53,7 @@ func InitAWS(config *aws.Config, options ...AWSOption) (*AWS, error) {
 }
 
 // Upload uploads a file to the Amazon S3 Bucket
-func (a *AWS) Upload(key, contentType string, data []byte) error {
+func (a *AWS) Upload(key, contentType string, data []byte) (*s3manager.UploadOutput, error) {
 	input := &s3manager.UploadInput{
 		Bucket:      a.bucket,
 		Key:         aws.String(key),
@@ -66,13 +61,13 @@ func (a *AWS) Upload(key, contentType string, data []byte) error {
 		ContentType: aws.String(contentType),
 	}
 
-	_, err := uploader.Upload(input)
+	res, err := a.uploader.Upload(input)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return res, nil
 }
 
 // Get returns an image from AWS

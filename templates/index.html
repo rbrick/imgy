@@ -4,6 +4,7 @@
     <body>
         <span>Welcome {{ .DisplayName }}</span><br/>
         <span>Email: {{ .Email }}</span><br/>
+        <span>Token: {{ .UploadToken }}</span>
         <span>Profile Picture:</span><br/>
         <img src="{{ .ProfilePicture }}"/><br/>
         <a href="/auth/signout">Sign out</a>
