@@ -19,12 +19,7 @@ var googleScopes = []string{
 }
 
 type GoogleAuthService struct {
-	config *oauth2.Config
-	path   string
-}
-
-func (gas *GoogleAuthService) AuthURL(state string) string {
-	return gas.config.AuthCodeURL(state)
+	BaseAuthService
 }
 
 func (gas *GoogleAuthService) Setup(c *config.OAuthConfig) *oauth2.Config {
@@ -41,11 +36,7 @@ func (gas *GoogleAuthService) Setup(c *config.OAuthConfig) *oauth2.Config {
 	return gas.config
 }
 
-func (gas *GoogleAuthService) Path() string {
-	return gas.path
-}
-
-func (gas *GoogleAuthService) Callback(client *http.Client) (*UserInfo, error) {
+func (gas *GoogleAuthService) Callback(client *http.Client, token *oauth2.Token) (*UserInfo, error) {
 	service, err := goauth.New(client)
 
 	if err != nil {
@@ -71,10 +62,6 @@ func (gas *GoogleAuthService) Callback(client *http.Client) (*UserInfo, error) {
 
 	ui := UserInfo(x)
 	return &ui, nil
-}
-
-func (gas *GoogleAuthService) Config() *oauth2.Config {
-	return gas.config
 }
 
 func (*GoogleAuthService) Name() string {

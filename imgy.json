@@ -18,7 +18,8 @@
     "inviteOnly": true,
     "oauthUrl": "http://localhost:8080",
     "oauthProviders": [
-        "google"
+        "google",
+        "github"
     ],
     "oauthSettings": {
        "google": {

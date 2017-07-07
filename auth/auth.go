@@ -20,14 +20,31 @@ type UserInfo struct {
 	Email, DisplayName, Picture string
 }
 
+type BaseAuthService struct {
+	config *oauth2.Config
+	path   string
+}
+
+func (bas *BaseAuthService) Path() string {
+	return bas.path
+}
+
+func (bas *BaseAuthService) Config() *oauth2.Config {
+	return bas.config
+}
+
+func (bas *BaseAuthService) AuthURL(state string) string {
+	return bas.config.AuthCodeURL(state)
+}
+
 // Service represents a service that provides authentication.
 type Service interface {
 	Name() string
 	Path() string
-	Setup(c *config.OAuthConfig) *oauth2.Config
+	Setup(*config.OAuthConfig) *oauth2.Config
 	Config() *oauth2.Config
-	AuthURL(state string) string
-	Callback(client *http.Client) (*UserInfo, error)
+	AuthURL(string) string
+	Callback(*http.Client, *oauth2.Token) (*UserInfo, error)
 }
 
 // RegisterService registers a service
@@ -77,7 +94,7 @@ func OAuthCallbackHandler(service Service) http.HandlerFunc {
 				client := service.Config().Client(oauth2.NoContext, token)
 
 				// Get the users email
-				userInfo, err := service.Callback(client)
+				userInfo, err := service.Callback(client, token)
 
 				if err != nil {
 					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

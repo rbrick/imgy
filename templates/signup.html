@@ -52,7 +52,7 @@
             <br/>
             <div>
             {{ range $v := .}}
-            <button type="button" onclick="window.location.href = '{{ $v.AuthURL }}'" class="btn imgy-btn {{ $v.AuthName  }}"><i class="fa fa-{{ $v.AuthName }} fa-lg" aria-hidden="true"></i> {{ $v.AuthName }}</button>
+            <button type="button" onclick="window.location.href = '{{ $v.AuthURL }}'" class="btn imgy-btn {{ $v.AuthName  }}"><i class="fa fa-{{ $v.AuthName }} fa-lg" aria-hidden="true"></i> Sign in with {{ $v.AuthName }}</button>
             {{ end }}
             </div>
             <!--<button type="button" class="btn imgy-btn google"><span class="fa fa-google fa-lg" aria-hidden="true"></span>Google</button>-->
