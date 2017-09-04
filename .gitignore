@@ -2,6 +2,8 @@
 vendor/
 *.db
 *.png
+*.jpeg
+*.jpg
 .aws/credentials
 credentials
 auth_creds.json
