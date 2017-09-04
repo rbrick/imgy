@@ -1,0 +1,92 @@
+<html>
+
+<head>
+    <link href="../assets/css/imgy.css" rel="stylesheet">
+    <script src="../assets/js/vex.combined.min.js"></script>
+    <script>
+        vex.defaultOptions.className = 'vex-theme-default'
+    </script>
+    <link rel="stylesheet" href="../assets/css/vex.css" />
+    <link href="../assets/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/vex-theme-default.css" />
+
+    <style>
+        .btn.arrows {
+            display: block;
+            background-color: #0074D9;
+            border-color: #0074D9;
+        }
+
+        .btn.delete {
+            background-color: #FF4136;
+            border-color: #FF4136;
+            width: 100px;
+            height: 35px;
+        }
+
+        .cont {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+            align-content: space-around;
+        }
+
+        .imgPrev {
+            width: 150px;
+            height: 150px;
+            margin-left: 15px;
+            margin-bottom: 15px;
+        }
+
+        .left {
+            margin-left: 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #444;
+        }
+    </style>
+
+    <script>
+        function preview(img, delUrl) {
+            vex.dialog.open({
+                input: [
+                    `<img src="${img}" class="imgPrev"><br/>`,
+                    `<span class="left"><strong>Type:</strong> JPEG</span><br/>`,
+                    `<span class="left"><strong>Link:</strong> <a href="${img}">${img}</a></span><br/>`,
+                    `<button onclick="del('${delUrl}');" class="btn delete left">Delete</button>`
+                ].join('')
+            });
+        }
+
+
+        function del(delUrl) {
+            vex.dialog.alert('Not yet implemented.');
+        }
+    </script>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h1><a href="/" class="header"> Imgy</a></h1>
+        {{ if .Empty }}
+        <h2>You have no images :(</h2>
+        {{ else }}
+         <div class="grid">
+            {{ range $v := .Images }}
+            <img onclick="preview('{{ $v.ImgyLink }}', '')" src="{{ $v.ImgyLink }}" class="grid item"> 
+            {{ end }}
+        </div>
+        <div class="cont">
+            <button class="btn arrows"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+            <button class="btn arrows"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+        </div> 
+        {{ end }}
+    </div>
+</body>
+
+</html>

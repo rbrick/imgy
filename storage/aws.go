@@ -5,6 +5,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
@@ -16,6 +17,7 @@ type AWSOption func(a *AWS)
 type AWS struct {
 	awsSession *session.Session
 	uploader   *s3manager.Uploader
+	client     *s3.S3
 	bucket     *string
 }
 
@@ -45,6 +47,7 @@ func InitAWS(config *aws.Config, options ...AWSOption) (*AWS, error) {
 	aws := &AWS{
 		awsSession: sess,
 		uploader:   s3manager.NewUploader(sess),
+		client:     s3.New(sess),
 	}
 
 	aws.Options(options...)
@@ -68,6 +71,14 @@ func (a *AWS) Upload(key, contentType string, data []byte) (*s3manager.UploadOut
 	}
 
 	return res, nil
+}
+
+func (a *AWS) Get(key string) (*s3.GetObjectOutput, error) {
+	getReq := &s3.GetObjectInput{
+		Bucket: a.bucket,
+		Key:    aws.String(key),
+	}
+	return a.client.GetObject(getReq)
 }
 
 // Get returns an image from AWS

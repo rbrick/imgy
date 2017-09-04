@@ -1,12 +1,35 @@
+<!-- https://avatars0.githubusercontent.com/u/5923432?v=3 -->
 <html>
     <head>
+          <link href="https://fonts.googleapis.com/css?family=Open+Sans|Pacifico" rel="stylesheet">  
+                  <link href="../assets/css/imgy.css" rel="stylesheet">
+                  <script src="../assets/js/vex.combined.min.js"></script>
+        <script>vex.defaultOptions.className = 'vex-theme-default'</script>
+        <link rel="stylesheet" href="../assets/css/vex.css" />
+        <link rel="stylesheet" href="../assets/css/vex-theme-default.css" />
+        <script>
+            function copy(text) {
+                // vex.dialog.prompt("This is your upload token. Press Ctrl+C to copy", text);
+                vex.dialog.open({
+                    message: "This is your upload token. Press Ctrl+C to copy.",
+                    input: `<input type="text" value="${text}" readonly>`
+                });
+            }
+        </script>
     </head>
+
     <body>
-        <span>Welcome {{ .DisplayName }}</span><br/>
-        <span>Email: {{ .Email }}</span><br/>
-        <span>Token: {{ .UploadToken }}</span>
-        <span>Profile Picture:</span><br/>
-        <img src="{{ .ProfilePicture }}"/><br/>
-        <a href="/auth/signout">Sign out</a>
+          <div class="bar">
+              <span class="bar h">Imgy</span>
+          </div>
+          <div class="pf">
+                <img src="{{ .ProfilePicture }}" class="pf img"/>
+                <span class="pf h">{{ .DisplayName }}</span>
+                <span class="pf st">({{ .Email }})</span>
+                <br/>
+                <a onclick="copy('{{ .UploadToken }}');">Copy Token</a>
+                <a href="/history">History</a> 
+                <a href="/auth/signout">Sign out</a>
+            </div>
     </body>
 </html>

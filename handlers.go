@@ -1,11 +1,15 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
 
+	"github.com/gorilla/mux"
 	"github.com/rbrick/imgy/auth"
 	"github.com/rbrick/imgy/db"
 	"github.com/rbrick/imgy/util"
@@ -69,6 +73,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 								UserID:    u.UserID,
 								S3Link:    res.Location,
 								Extension: ext,
+								ImgyLink:  conf.OauthURL + "/" + key,
 							}
 							response.Success = true
 
@@ -88,12 +93,59 @@ func upload(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func history(w http.ResponseWriter, r *http.Request) {
+	sess := util.MustSession(r, "imgy")
+	u := db.GetUserFromSession(sess)
+
+	// TODO pagination
+	images := db.GetImagesByUser(u.UserID, 12, 0)
+
+	data := struct {
+		Empty  bool
+		Images []*db.Image
+	}{
+		Empty:  len(images) < 1,
+		Images: images,
+	}
+	err := historyTemplate.Execute(w, data)
+	fmt.Println(err)
+}
+
+func deleteHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func signOut(w http.ResponseWriter, r *http.Request) {
 	sess := util.MustSession(r, "imgy")
 	if u := db.GetUserFromSession(sess); u != nil {
 		u.EndSession(sess, r, w)
 	}
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+}
+
+func get(w http.ResponseWriter, r *http.Request) {
+	v := mux.Vars(r)
+	if id, ok := v["id"]; ok {
+		img := db.GetImageById(id)
+		if img != nil {
+			fileName := img.ImageID + "." + img.Extension
+			res, err := amazonWebServices.Get(fileName)
+			if err != nil {
+				fmt.Println(err)
+				http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			} else {
+				bd, _ := ioutil.ReadAll(res.Body)
+				http.ServeContent(w, r, fileName, *res.LastModified, io.ReadSeeker(bytes.NewReader(bd)))
+			}
+		} else {
+			fmt.Println(img)
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		}
+	} else {
+
+		fmt.Println(ok)
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
 }
 
 func index(w http.ResponseWriter, r *http.Request) {

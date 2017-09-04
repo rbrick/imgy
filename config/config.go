@@ -24,6 +24,16 @@ var (
 			Bucket: "imgy-s3",
 			Region: "us-west-2",
 		},
+		InviteOnly:     true,
+		OauthURL:       "https://imgy.pw",
+		OauthProviders: []string{"google"},
+		OauthConfigs: map[string]*OAuthConfig{
+			"google": &OAuthConfig{
+				ClientID:     "YOUR-CLIENT-ID",
+				ClientSecret: "YOUR-CLIENT-SECRET",
+				RedirectPath: "/auth/callback/google",
+			},
+		},
 	}
 )
 
@@ -35,6 +45,7 @@ type Config struct {
 	AWSConfig      *AWSConfig              `json:"aws"`
 	TLSEnabled     bool                    `json:"tlsEnabled"`
 	TLSConfig      *TLSConfig              `json:"tls"`
+	InviteOnly     bool                    `json:"inviteOnly"`
 	OauthURL       string                  `json:"oauthUrl"`
 	OauthProviders []string                `json:"oauthProviders"`
 	OauthConfigs   map[string]*OAuthConfig `json:"oauthSettings"`
@@ -59,7 +70,6 @@ type GoogleAuthConfig struct {
 }
 
 type OAuthConfig struct {
-	Name         string `json:"name"`
 	ClientID     string `json:"clientId"`
 	ClientSecret string `json:"clientSecret"`
 	RedirectPath string `json:"redirectPath"`

@@ -7,28 +7,27 @@ import (
 	"github.com/rbrick/imgy/util"
 )
 
-func RequireAuth(h http.Handler) http.Handler {
-	handle := func(w http.ResponseWriter, r *http.Request) {
+func RequireAuth(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		sess := util.MustSession(r, "imgy")
 
 		if v, ok := sess.Values["session_token"]; !ok {
-			sess.AddFlash("Not logged in.")
 			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		} else {
 			u := db.GetUserBySessionToken(v.(string))
 
 			if u == nil {
-				sess.AddFlash("Not logged in.")
 				http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 			} else {
 				if u.LoggedIn() {
-
+					// serve the page normally
+					h.ServeHTTP(w, r)
+				} else {
+					http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 				}
 			}
 		}
-		sess.Save(r, w)
 	}
-	return http.HandlerFunc(handle)
 }
 
 // RequireUpload means a path requires an upload token to be completed

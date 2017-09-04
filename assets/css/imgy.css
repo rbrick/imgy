@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Pacifico');
+body {
+      font-family: 'Open Sans', sans-serif;
+      color: white;
+      background-color: #0074D9;
+  }
+
+  .bar {
+      margin-left: 1%;
+      display: flex;
+  }
+  .bar.h {
+      font-size: 35px;
+      font-family: 'Pacifico', cursive;
+  }
+  .pf {
+      font-family: 'Open Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      font-size: 35px;
+      text-align: center;
+  }
+  .pf.img {
+      border-radius: 50%;
+      width: 300px
+  }
+  .pf.h {
+      font-family: 'Pacifico', cursive;
+      text-align: center;
+      font-size: 60px;
+  }
+  .pf a {
+      font-family: 'Open Sans', sans-serif;
+      text-decoration: none;
+      color: white;
+  }
+  .pf a:hover {
+      color: #DDDDDD;
+  }
+  .pf.btn {
+      border: none;
+  }
+  .pf.st {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 15px;
+  }
+
+  .header {
+      font-family: 'Pacifico', sans-serif;
+      text-align: center;
+      color: #FFFFFF;
+      font-size: 65px;
+      text-decoration: none;
+  }
+
+  .subheader {
+      display: block;
+      font-family: 'Open Sans', sans-serif;
+      text-align: center;
+      color: #FFFFFF;
+      font-size: 15px;
+  }
+  
+  .btn {
+      font-family: 'Open Sans', sans-serif;
+      border-style: solid;
+      border-radius: 10px;
+      width: 200px;
+      height: 60px;
+      color: #FFFFFF;
+      font-size: 18px;
+      text-transform: capitalize;
+  }
+  .btn.github {
+      background-color: #111111;
+      border-color: #111111;
+  }
+  .btn.google {
+      background-color: #FF4136;
+      border-color: #FF4136;
+  }
+  .container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      align-content: space-around;
+  }
+
+  .grid {
+      display: flex;
+      align-items: center;
+       justify-content: center; 
+      flex-direction: row;
+      align-content: center;
+      flex-flow: row wrap;
+  
+      width: 600px;
+  }
+
+  .grid.item {
+      width:  150px;  /* Or whatever */
+      height: 150px; /* Or whatever */
+      margin-left: 15px;
+      margin-bottom: 15px; 
+      flex-grow: 0;   
+  }
+
+  .grid.item:hover {
+      -webkit-animation: .5s jump 0s;
+      animation: .5s jump;
+      box-shadow: 10px 5px 5px #0059A6; 
+      filter: brightness(85%);
+  }
+
+  @keyframes jump {
+      100% { transform: translateY(-15px); -webkit-transform: translateY(-15px); }   
+  }
+
+  .txt {
+      border-radius: 4px;
+      border-width: 1px;
+      color: slategrey;
+      font-size: 22px;
+      height: 50px; 
+      width: 250px; 
+  }

@@ -60,27 +60,37 @@ func main() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/upload", upload)
+	// API PATHS
+	router.Path("/api/upload").Methods("POST").HandlerFunc(upload)
+	router.Path("/api/delete/{id:[a-zA-Z0-9]{8}}").Methods("POST").HandlerFunc(deleteHandler)
 
-	router.HandleFunc("/auth/signout", signOut)
+	// AUTH PATHS
+	router.Path("/auth/signout").Methods("GET").HandlerFunc(signOut)
 
 	for _, v := range auth.Services() {
 		router.HandleFunc(v.Path(), auth.OAuthCallbackHandler(v))
 	}
 
-	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
+	// USER PATHS
+	router.Path("/history").Methods("GET").HandlerFunc(RequireAuth(history))
 
-	router.HandleFunc("/", index)
+	router.PathPrefix("/assets/").Methods("GET").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
 
-	// authHandler := newAuthHandler(router)
+	// INDEX PATHS (Serving images, etc)
+	router.Path("/").Methods("GET").HandlerFunc(index)
+	router.Path("/{id:[a-zA-Z0-9]{8}}").Methods("GET").HandlerFunc(get)
 
 	host := net.JoinHostPort(conf.Host, conf.Port)
 
 	if conf.TLSEnabled {
-		log.Println("Starting webserver with TLS")
-		log.Fatalln(http.ListenAndServeTLS(host, conf.TLSConfig.CertPath, conf.TLSConfig.KeyPath, router))
+		log.Println("[Imgy] Starting webserver with TLS")
+		log.Fatalln(http.ListenAndServeTLS(host, conf.TLSConfig.CertPath, conf.TLSConfig.KeyPath, NewLogHandler(router)))
 	} else {
-		log.Println("Starting webserver")
-		log.Fatalln(http.ListenAndServe(host, router))
+		log.Println("[Imgy] Starting webserver")
+		log.Fatalln(http.ListenAndServe(host, NewLogHandler(router)))
 	}
+}
+
+func Conf() *config.Config {
+	return conf
 }
