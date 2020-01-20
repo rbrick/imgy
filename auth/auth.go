@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/rbrick/imgy"
 	"github.com/rbrick/imgy/config"
 	"github.com/rbrick/imgy/db"
 	"github.com/rbrick/imgy/util"
@@ -109,9 +108,6 @@ func OAuthCallbackHandler(service Service) http.HandlerFunc {
 					u.ProfilePicture = userInfo.Picture
 					u.StartSession(imgySess, r, w)
 				} else {
-					if imgy.Conf() {
-
-					}
 					u = &db.User{
 						UserID:         util.GetRandom(8),
 						DisplayName:    userInfo.DisplayName,

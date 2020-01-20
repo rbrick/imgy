@@ -41,10 +41,10 @@ func init() {
 
 	flag.Parse()
 
-	if config, err := config.Open(*configPath); err != nil {
+	if _config, err := config.Open(*configPath); err != nil {
 		log.Fatalln(err)
 	} else {
-		conf = config
+		conf = _config
 	}
 
 	initAWS()

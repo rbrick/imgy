@@ -18,7 +18,6 @@
     "inviteOnly": true,
     "oauthUrl": "http://localhost:8080",
     "oauthProviders": [
-        "google",
         "github"
     ],
     "oauthSettings": {
@@ -28,8 +27,8 @@
             "redirectPath": "/auth/callback/google"
         },
         "github": {
-            "clientId": "",
-            "clientSecret": "",
+            "clientId": "b8f979e3fa7782c18146",
+            "clientSecret": "85cb803c2e449066916dd38d45ea001ded511e2c",
             "redirectPath": "/auth/callback/github"
         }
     }
